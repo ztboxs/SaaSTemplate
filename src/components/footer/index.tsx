@@ -2,9 +2,8 @@ import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { useI18n } from '@/utils/i18n';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { responsiveClasses } from '@/utils/mediaQueries';
 import { LAYOUT_SIZES } from '@/utils/constants';
-import { cn, gridVariants, textVariants } from '@/utils/responsive';
+import { cn } from '@/utils/responsive';
 import { TwitterIcon, GithubIcon, LinkedinIcon, ExternalLinkIcon } from '@/components/icons';
 
 interface FooterProps {
@@ -69,32 +68,30 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <footer 
       className={cn(
-        'bg-slate-800 text-white border-t border-slate-700',
-        'mt-auto',
+        'mt-auto border-t transition-all duration-300',
+        'bg-[var(--header-bg)] border-[var(--header-border)]',
+        'text-[var(--text-primary)]',
         className
       )}
       style={{ 
         minHeight: isMobile ? LAYOUT_SIZES.footer.mobile : LAYOUT_SIZES.footer.desktop 
       }}
     >
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="container mx-auto px-6 py-12 md:py-16">
         {/* 主要内容区域 */}
         <div className={cn(
-          gridVariants({ 
-            cols: isMobile ? 2 : 4, 
-            gap: isMobile ? 'md' : 'lg' 
-          }),
-          'mb-8'
+          'grid gap-8 mb-12',
+          isMobile ? 'grid-cols-2' : 'grid-cols-4 gap-12'
         )}>
           {footerSections.map((section) => (
             <div key={section.title} className="space-y-4">
-              <h3 className={textVariants({ 
-                size: 'base', 
-                weight: 'semibold' 
-              })}>
+              <h3 className={cn(
+                'text-base font-semibold mb-4',
+                'text-[var(--text-primary)]'
+              )}>
                 {section.title}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     {link.external ? (
@@ -103,25 +100,35 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(
-                          textVariants({ size: 'sm' }),
-                          'text-slate-300 hover:text-white transition-colors',
-                          'flex items-center gap-2'
+                          'flex items-center gap-2 text-sm font-medium',
+                          'text-[var(--text-secondary)] hover:text-[var(--primary)]',
+                          'transition-all duration-200 hover:translate-x-1',
+                          'group'
                         )}
                       >
-                        {link.icon && <span>{link.icon}</span>}
-                        {link.label}
+                        {link.icon && (
+                          <span className="group-hover:scale-110 transition-transform duration-200">
+                            {link.icon}
+                          </span>
+                        )}
+                        <span>{link.label}</span>
                       </a>
                     ) : (
                       <Link
                         to={link.to}
                         className={cn(
-                          textVariants({ size: 'sm' }),
-                          'text-slate-300 hover:text-white transition-colors',
-                          'flex items-center gap-2'
+                          'flex items-center gap-2 text-sm font-medium',
+                          'text-[var(--text-secondary)] hover:text-[var(--primary)]',
+                          'transition-all duration-200 hover:translate-x-1',
+                          'group'
                         )}
                       >
-                        {link.icon && <span>{link.icon}</span>}
-                        {link.label}
+                        {link.icon && (
+                          <span className="group-hover:scale-110 transition-transform duration-200">
+                            {link.icon}
+                          </span>
+                        )}
+                        <span>{link.label}</span>
                       </Link>
                     )}
                   </li>
@@ -132,54 +139,52 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
         </div>
 
         {/* 分隔线 */}
-        <div className="border-t border-slate-700 pt-6">
+        <div className="border-t border-[var(--border)] pt-8">
           {/* 底部信息 */}
           <div className={cn(
-            responsiveClasses.flex.colToRow,
-            'items-center justify-between gap-4'
+            'flex flex-col md:flex-row items-center justify-between gap-6'
           )}>
             {/* 版权信息 */}
-            <div className={responsiveClasses.text.centerToLeft}>
-              <p className={textVariants({ size: 'sm' })}>
+            <div className="text-center md:text-left">
+              <p className="text-sm font-medium text-[var(--text-secondary)]">
                 © {currentYear} {t('app.title')}. 保留所有权利。
               </p>
             </div>
 
-                         {/* 额外链接 */}
-             <div className={cn(
-               responsiveClasses.flex.center,
-               'gap-4'
-             )}>
-               <a
-                 href="/privacy"
-                 className={cn(
-                   textVariants({ size: 'sm' }),
-                   'text-slate-300 hover:text-white transition-colors'
-                 )}
-               >
-                 隐私政策
-               </a>
-               <span className="text-slate-500">|</span>
-               <a
-                 href="/terms"
-                 className={cn(
-                   textVariants({ size: 'sm' }),
-                   'text-slate-300 hover:text-white transition-colors'
-                 )}
-               >
-                 服务条款
-               </a>
-             </div>
+            {/* 额外链接 */}
+            <div className="flex items-center gap-6">
+              <a
+                href="/privacy"
+                className={cn(
+                  'text-sm font-medium',
+                  'text-[var(--text-secondary)] hover:text-[var(--primary)]',
+                  'transition-colors duration-200'
+                )}
+              >
+                隐私政策
+              </a>
+              <span className="text-[var(--border)] text-lg">|</span>
+              <a
+                href="/terms"
+                className={cn(
+                  'text-sm font-medium',
+                  'text-[var(--text-secondary)] hover:text-[var(--primary)]',
+                  'transition-colors duration-200'
+                )}
+              >
+                服务条款
+              </a>
+            </div>
           </div>
 
           {/* 移动端额外信息 */}
           <div className={cn(
-            responsiveClasses.show.mobile,
-            'mt-4 text-center'
+            'md:hidden mt-6 text-center'
           )}>
             <p className={cn(
-              textVariants({ size: 'xs' }),
-              'text-slate-400'
+              'text-xs text-[var(--text-secondary)]',
+              'bg-[var(--background)] px-4 py-2 rounded-lg inline-block',
+              'border border-[var(--border)]'
             )}>
               技术支持：React + TypeScript + TailwindCSS
             </p>
@@ -187,17 +192,24 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
 
           {/* 桌面端备案信息 */}
           <div className={cn(
-            responsiveClasses.hide.mobile,
-            'mt-4 text-center'
+            'hidden md:block mt-6 text-center'
           )}>
-            <p className={cn(
-              textVariants({ size: 'xs' }),
-              'text-slate-400'
+            <div className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 rounded-lg',
+              'bg-[var(--background)] border border-[var(--border)]'
             )}>
-              ICP备案号：京ICP备12345678号-1 | 
-              网安备案号：11010802012345 | 
-              技术支持：React + TypeScript + TailwindCSS
-            </p>
+              <p className="text-xs text-[var(--text-secondary)]">
+                ICP备案号：京ICP备12345678号-1
+              </p>
+              <span className="text-[var(--border)]">•</span>
+              <p className="text-xs text-[var(--text-secondary)]">
+                网安备案号：11010802012345
+              </p>
+              <span className="text-[var(--border)]">•</span>
+              <p className="text-xs text-[var(--text-secondary)]">
+                技术支持：React + TypeScript + TailwindCSS
+              </p>
+            </div>
           </div>
         </div>
       </div>

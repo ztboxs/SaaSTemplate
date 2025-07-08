@@ -23,9 +23,8 @@ interface AppState {
 const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      // 初始状态
-      theme: (window.matchMedia?.('(prefers-color-scheme: dark)').matches 
-        ? 'dark' : 'light') as 'light' | 'dark',
+      // 初始状态 - 默认使用光亮模式
+      theme: 'light',
       locale: 'en',
       isAuthenticated: false,
       user: null,

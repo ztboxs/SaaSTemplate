@@ -45,6 +45,9 @@ import {
   Instagram,
   Linkedin,
   Youtube,
+  Sun,
+  Moon,
+  Globe,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/utils/responsive';
@@ -104,6 +107,23 @@ export const CloseIcon = forwardRef<SVGSVGElement, IconProps>((props, ref) =>
   <Icon icon={X} ref={ref} {...props} />
 );
 CloseIcon.displayName = 'CloseIcon';
+
+// 主题切换图标
+export const SunIcon = forwardRef<SVGSVGElement, IconProps>((props, ref) => 
+  <Icon icon={Sun} ref={ref} {...props} />
+);
+SunIcon.displayName = 'SunIcon';
+
+export const MoonIcon = forwardRef<SVGSVGElement, IconProps>((props, ref) => 
+  <Icon icon={Moon} ref={ref} {...props} />
+);
+MoonIcon.displayName = 'MoonIcon';
+
+// 语言切换图标
+export const GlobeIcon = forwardRef<SVGSVGElement, IconProps>((props, ref) => 
+  <Icon icon={Globe} ref={ref} {...props} />
+);
+GlobeIcon.displayName = 'GlobeIcon';
 
 // 界面操作图标
 export const SearchIcon = forwardRef<SVGSVGElement, IconProps>((props, ref) => 

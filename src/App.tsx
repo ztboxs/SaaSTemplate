@@ -13,13 +13,9 @@ function App() {
     setMounted(true)
   }, [])
 
-  // 应用深色模式
+  // 应用主题模式 - 使用 data-theme 属性
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
   if (!mounted || loading) {

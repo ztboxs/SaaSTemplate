@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/utils/i18n';
+import useAppStore from '@/store/useAppStore';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { responsiveClasses } from '@/utils/mediaQueries';
-import { LAYOUT_SIZES, Z_INDEX, ANIMATION_DURATION } from '@/utils/constants';
+import { LAYOUT_SIZES, ANIMATION_DURATION } from '@/utils/constants';
 import { cn } from '@/utils/responsive';
-import { MenuIcon, CloseIcon } from '@/components/icons';
+import { 
+  MenuIcon, 
+  CloseIcon, 
+  SunIcon, 
+  MoonIcon, 
+  GlobeIcon
+} from '@/components/icons';
 
 interface HeaderProps {
   className?: string;
@@ -14,11 +20,16 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ className }) => {
   const { t, currentLocale, switchLocale } = useI18n();
+  const { theme, setTheme } = useAppStore();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
     switchLocale(currentLocale === 'en' ? 'zh-CN' : 'en');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   const toggleMobileMenu = () => {
@@ -30,63 +41,110 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
   };
 
   const navigationItems = [
-    { to: '/', label: t('nav.home') },
-    { to: '/about', label: t('nav.about') },
-    { to: '/landing', label: '落地页' },
+    { to: '/', label: t('nav.home')},
+    { to: '/about', label: t('nav.about')},
+    { to: '/landing', label: '落地页'},
     { to: '/faq', label: 'FAQ' },
-    { to: '/login', label: '登录' },
+    { to: '/login', label: '登录'},
   ];
 
   return (
     <>
       <header 
         className={cn(
-          'bg-slate-800 text-white border-b border-slate-700',
-          'sticky top-0 w-full',
+          'sticky top-0 w-full z-50',
+          'bg-[var(--header-bg)] border-b border-[var(--header-border)]',
+          'backdrop-blur-sm bg-opacity-95 transition-all duration-300',
           className
         )}
         style={{ 
           height: isMobile ? LAYOUT_SIZES.header.mobile : LAYOUT_SIZES.header.desktop,
-          zIndex: Z_INDEX.navbar 
         }}
       >
         <div className="container mx-auto px-4 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* Logo */}
-            <Link 
-              to="/" 
-              className="text-xl font-bold hover:text-slate-300 transition-colors"
-              onClick={closeMobileMenu}
-            >
-              {t('app.title')}
-            </Link>
+            
+            {/* 左侧：Logo 和导航菜单 */}
+            <div className="flex items-center space-x-8">
+              {/* Logo */}
+              <Link 
+                to="/" 
+                className="text-xl font-bold text-[var(--text-primary)] hover:text-[var(--primary)] transition-colors duration-200"
+                onClick={closeMobileMenu}
+              >
+                {t('app.title')}
+              </Link>
 
-            {/* 桌面端导航 */}
-            <nav className={responsiveClasses.hide.mobile}>
-              <div className="flex items-center space-x-6">
+              {/* 桌面端导航菜单 */}
+              <nav className="hidden md:flex items-center space-x-6">
                 {navigationItems.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="hover:text-slate-300 transition-colors text-sm font-medium"
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-2 rounded-lg',
+                      'text-[var(--nav-text)] hover:text-[var(--nav-text-hover)]',
+                      'hover:bg-[var(--surface)] transition-all duration-200',
+                      'text-sm font-medium'
+                    )}
                   >
-                    {item.label}
+                    {item.icon}
+                    <span>{item.label}</span>
                   </Link>
                 ))}
+              </nav>
+            </div>
+
+            {/* 右侧：功能按钮 */}
+            <div className="flex items-center space-x-3">
+              
+              {/* 桌面端功能按钮 */}
+              <div className="hidden md:flex items-center space-x-2">
+                {/* 语言切换按钮 */}
                 <button
                   onClick={toggleLanguage}
-                  className="px-3 py-1 bg-slate-700 rounded-md hover:bg-slate-600 transition-colors text-sm"
+                  className={cn(
+                    'p-2 rounded-lg transition-all duration-200',
+                    'text-[var(--nav-text)] hover:text-[var(--nav-text-hover)]',
+                    'hover:bg-[var(--surface)] hover:shadow-sm',
+                    'flex items-center gap-1'
+                  )}
+                  title={currentLocale === 'en' ? '切换到中文' : 'Switch to English'}
                 >
-                  {currentLocale === 'en' ? '中文' : 'English'}
+                  <GlobeIcon size="sm" />
+                  <span className="text-xs font-medium">
+                    {currentLocale === 'en' ? 'CN' : 'EN'}
+                  </span>
+                </button>
+
+                {/* 主题切换按钮 */}
+                <button
+                  onClick={toggleTheme}
+                  className={cn(
+                    'p-2 rounded-lg transition-all duration-200',
+                    'text-[var(--nav-text)] hover:text-[var(--nav-text-hover)]',
+                    'hover:bg-[var(--surface)] hover:shadow-sm'
+                  )}
+                  title={theme === 'light' ? '切换到深色模式' : '切换到浅色模式'}
+                >
+                  <motion.div
+                    initial={false}
+                    animate={{ rotate: theme === 'light' ? 0 : 180 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {theme === 'light' ? <MoonIcon size="sm" /> : <SunIcon size="sm" />}
+                  </motion.div>
                 </button>
               </div>
-            </nav>
 
-            {/* 移动端菜单按钮 */}
-            <div className={responsiveClasses.show.mobile}>
+              {/* 移动端菜单按钮 */}
               <button
                 onClick={toggleMobileMenu}
-                className="p-2 rounded-md hover:bg-slate-700 transition-colors"
+                className={cn(
+                  'md:hidden p-2 rounded-lg transition-all duration-200',
+                  'text-[var(--nav-text)] hover:text-[var(--nav-text-hover)]',
+                  'hover:bg-[var(--surface)]'
+                )}
                 aria-label="Toggle menu"
               >
                 <motion.div
@@ -101,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     transition={{ duration: 0.2 }}
                     className="absolute"
                   >
-                    <MenuIcon size="lg" />
+                    <MenuIcon size="md" />
                   </motion.div>
                   <motion.div
                     variants={{
@@ -111,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     transition={{ duration: 0.2 }}
                     className="absolute"
                   >
-                    <CloseIcon size="lg" />
+                    <CloseIcon size="md" />
                   </motion.div>
                 </motion.div>
               </button>
@@ -130,8 +188,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: ANIMATION_DURATION.fast / 1000 }}
-              className="fixed inset-0 bg-black bg-opacity-50"
-              style={{ zIndex: Z_INDEX.backdrop }}
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
               onClick={closeMobileMenu}
             />
             
@@ -141,14 +198,18 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: ANIMATION_DURATION.normal / 1000 }}
-              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-slate-800 shadow-xl"
+              className={cn(
+                'fixed top-0 right-0 h-full w-80 max-w-[85vw] z-50',
+                'bg-[var(--header-bg)] border-l border-[var(--header-border)]',
+                'shadow-2xl backdrop-blur-sm'
+              )}
               style={{ 
-                zIndex: Z_INDEX.sidebar,
                 paddingTop: isMobile ? LAYOUT_SIZES.header.mobile : LAYOUT_SIZES.header.desktop 
               }}
             >
               <nav className="p-6">
-                <div className="space-y-4">
+                <div className="space-y-2">
+                  {/* 移动端导航菜单 */}
                   {navigationItems.map((item, index) => (
                     <motion.div
                       key={item.to}
@@ -161,14 +222,21 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     >
                       <Link
                         to={item.to}
-                        className="block text-white hover:text-slate-300 transition-colors py-3 text-lg font-medium border-b border-slate-700"
+                        className={cn(
+                          'flex items-center gap-3 px-4 py-3 rounded-xl',
+                          'text-[var(--text-primary)] hover:text-[var(--primary)]',
+                          'hover:bg-[var(--surface)] transition-all duration-200',
+                          'font-medium'
+                        )}
                         onClick={closeMobileMenu}
                       >
-                        {item.label}
+                        {item.icon}
+                        <span>{item.label}</span>
                       </Link>
                     </motion.div>
                   ))}
                   
+                  {/* 移动端功能按钮 */}
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -176,16 +244,40 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                       delay: navigationItems.length * 0.1,
                       duration: ANIMATION_DURATION.normal / 1000 
                     }}
-                    className="pt-4"
+                    className="pt-6 border-t border-[var(--border)] space-y-2"
                   >
+                    {/* 语言切换 */}
                     <button
                       onClick={() => {
                         toggleLanguage();
                         closeMobileMenu();
                       }}
-                      className="w-full px-4 py-2 bg-slate-700 text-white rounded-md hover:bg-slate-600 transition-colors"
+                      className={cn(
+                        'w-full flex items-center gap-3 px-4 py-3 rounded-xl',
+                        'text-[var(--text-primary)] hover:text-[var(--primary)]',
+                        'hover:bg-[var(--surface)] transition-all duration-200',
+                        'font-medium'
+                      )}
                     >
-                      {currentLocale === 'en' ? '中文' : 'English'}
+                      <GlobeIcon size="sm" />
+                      <span>{currentLocale === 'en' ? '切换到中文' : 'Switch to English'}</span>
+                    </button>
+
+                    {/* 主题切换 */}
+                    <button
+                      onClick={() => {
+                        toggleTheme();
+                        closeMobileMenu();
+                      }}
+                      className={cn(
+                        'w-full flex items-center gap-3 px-4 py-3 rounded-xl',
+                        'text-[var(--text-primary)] hover:text-[var(--primary)]',
+                        'hover:bg-[var(--surface)] transition-all duration-200',
+                        'font-medium'
+                      )}
+                    >
+                      {theme === 'light' ? <MoonIcon size="sm" /> : <SunIcon size="sm" />}
+                      <span>{theme === 'light' ? '深色模式' : '浅色模式'}</span>
                     </button>
                   </motion.div>
                 </div>
