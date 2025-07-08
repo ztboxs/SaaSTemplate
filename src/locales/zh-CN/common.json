@@ -1,0 +1,17 @@
+{
+  "app": {
+    "title": "Yazeta 应用",
+    "description": "一个使用 TypeScript 和 Vite 构建的现代 React 应用"
+  },
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系我们"
+  },
+  "actions": {
+    "submit": "提交",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除"
+  }
+} 

@@ -1,0 +1,17 @@
+{
+  "app": {
+    "title": "Yazeta App",
+    "description": "A modern React application with TypeScript and Vite"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete"
+  }
+} 
